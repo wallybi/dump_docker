@@ -1,0 +1,303 @@
+#!/bin/bash
+print_banner() {
+echo -e "\e[38;5;196m                                                                                      \e[0m"
+echo -e "\e[38;5;196m YMM'    MP' \`7MMF'\`7MN.   \`7MF'\`7MM\"\"\"\"YMM    .g8\"\"8q. \`7MMF'  \`7MMF'\`7MM\"\"\"Mq. \e[0m"
+echo -e "\e[38;5;208m  VMb.  ,P     MM    MMN.    M    MM    \`7  .dP'    \`YM. MM      MM    MM   \`MM.\e[0m"
+echo -e "\e[38;5;220m   \`MM.M'      MM    M YMb   M    MM   d    dM'      \`MM MM      MM    MM   ,M9 \e[0m"
+echo -e "\e[38;5;226m     MMb       MM    M  \`MN. M    MMmmMM    MM        MM MMmmmmmmMM    MMmmdM9  \e[0m"
+echo -e "\e[38;5;190m   ,M'\`Mb.     MM    M   \`MM.M    MM   Y  , MM.      ,MP MM      MM    MM       \e[0m"
+echo -e "\e[38;5;166m  ,P   \`MM.    MM    M     YMM    MM     ,M \`Mb.    ,dP' MM      MM    MM       \e[0m"
+echo -e "\e[38;5;130m.MM:.  .:MMa..JMML..JML.    YM  .JMMmmmmMMM   \`\"bmmd\"' .JMML.  .JMML..JMML.     \e[0m"
+echo -e "\e[38;5;118m                                                                                      \e[0m"
+
+}
+#MENU PRINCIPAL, COMO NO?
+menu_principal() {
+    while true; do
+        clear
+        print_banner
+        echo "1. Dump DB"
+        echo "2. Copiar DB"
+        echo "3. Meter DB"
+        echo "4. Volcar DB"
+        echo "5. Ver datos Globales guardados"
+        echo "6. Datos Globales"
+        echo "7. Ruta de salida de datos"
+        echo "8. Ruta del docker de donde vamos a sacar datos"
+        echo "9. Salir"
+        read -p "Elige una opción: " opcion
+
+        case $opcion in
+            1) dumpear_db ;;
+            2) sacar_db ;;
+            3) meter_db ;;  
+            4) volcar_db ;;
+            5) ver_datos ;;  
+            6) datos_globales ;;
+            7) ruta_inout ;;
+            8) ruta_inout ;;  
+            9) exit ;;
+            *) echo "Opción no válida. Inténtalo de nuevo." ;;
+        esac
+    done
+}
+
+#MENU PARA ELEGIR SI VAMOS A METER LOS DATOS A MANO O VAMOS A USAR GLOBALES
+global_local()
+{
+     while true; do
+        clear
+        print_banner
+        echo "1. Datos Globales"
+        echo "2. Introducir datos"
+        echo "3. Contenedor local"
+        echo "4. DB Local"
+        echo "5. Usuario Local"
+        echo "6. Password Local"
+        echo "9. Salir"
+        read -p "Elige una opción: " opcion
+
+        case $opcion in
+            1) global_data ;;
+            2) local_data ;;
+            3) local_docker ;; 
+            4) local_db ;;
+            5) local_user ;; 
+            6) local_pass ;; 
+            9) menu_principal ;;
+            *) echo "Opción no válida. Inténtalo de nuevo." ;;
+        esac
+    done
+}
+
+# AQUI VAMOS A METER LA RUTA LOCAL DONDE QUEREMOS SACAR LOS DATOS
+fecha=$(date +"%d%m%Y_%H%M")
+datos_salida=extracion_$contenedor_$fecha
+archivo_copia=$datos_salida
+ruta_inout()
+{
+while true; do
+    clear
+    print_banner
+    echo "1) Introducir ruta local"
+    echo "2) Ver ruta local"
+    echo "3) Introducir ruta contenedor"
+    echo "4) Ver ruta contenedor"
+    echo "5) Archivo de entrada para copiar o volcar"
+    echo "9) Salir"
+    read opcion_rutas
+    
+    case $opcion_rutas in
+    
+    1) 
+        read -p "Introduce la ruta de salida del archivo: " path_local
+        path_archivo="$path_local/$datos_salida"
+        read -p  "Se guardara en $path_archivo"
+        ;;
+
+    2) 
+        echo "$path_archivo"  
+        echo "Se guardara en la ruta:  $path_local"
+        echo "En el archivo: $datos_salida"
+        read -p "La salida completa es: $path_archivo"
+        ;;
+
+    3) 
+        read -p "Introduce la ruta del docker: " path_docker
+        read -p "Se va a sacar de $path_docker"
+        ;;
+    
+    4) 
+        echo "La ruta del docker de donde se extraeran los datos sera:"
+        echo ""
+        read -p "$path_docker"        
+        ;;
+    5)  
+        read -p "introduce el nombre del archivo a copiar: " archivo_entrada
+        echo "El archivo de entrada es: $archivo_entrada"
+        ;;
+       
+    9) 
+        echo "Saliendo del menú de rutas."
+        break
+        ;;
+    *) 
+        echo "Opción inválida. Por favor, selecciona una opción válida."
+        ;;
+    esac
+done
+}
+
+
+#AQUI VAMOS A RECOGER LOS DATITOS PARA TENERLOS GUARDADOS Y NO TENER QUE METERLOS 100 VECES
+datos_globales()
+{
+sudo docker ps -a
+read -p "De que contenedor: " contenedor_global
+read -p "Nombre de la DB:  " db_name_global
+read -p "Usuario de la DB:  " db_user_global
+read -p "Contraseña de la DB:  " db_pass_global
+ver_datos
+}
+
+#QUE ME GUSTA UN MENU, VAMOS A POR EL QUE PERMITE METER LOS DATOS A LA CARTA, POR SI ME PONGO TIQUISMIQUIS
+
+data_options_read() {
+    echo "¿Quieres usar los datos globales o introducir manualmente?"
+    echo "1) Globales"
+    echo "2) Introducir todo"
+    echo "3) Introducir contenedor"
+    echo "4) Introducir base de datos"
+    echo "5) Introducir usuario"
+    echo "6) Introducir password"
+    read opcion_contenedor
+    
+    case $opcion_contenedor in
+    
+    1) 
+        echo "Globales"
+        contenedor="$contenedor_global"
+        base_datos="$db_name_global"
+        usuario="$db_user_global"
+        password="$db_pass_global"
+        ;;
+    
+    2) 
+        echo "Introducir todo"  
+        sudo docker ps -a
+        read -p "De qué contenedor: " contenedor
+        read -p "Nombre de la DB:  " base_datos
+        read -p "Usuario de la DB:  " usuario
+        read -p "Contraseña de la DB:  " password 
+        ;;
+
+    3) 
+        echo "Introducir Contenedor"
+        read -p "De qué contenedor: " contenedor
+        base_datos="$sb_name_global"
+        usuario="$db_user_global"
+        password="$de_pass_global"
+        ;;
+    
+    4) 
+        echo "Introducir base de datos"
+        contenedor="$contenedor_global"
+        usuario="$db_user_global"
+        password="$de_pass_global"
+        read -p "Nombre de la DB:  " base_datos        
+        ;;
+    
+    5) 
+        echo "Introducir usuario"
+        contenedor="$contenedor_global"
+        base_datos="$db_name_global"
+        password="$db_pass_global"
+        read -p "Usuario de la DB:  " usuario
+        ;;
+    
+    6) 
+        echo "Introducir password"
+        contenedor="$contenedor_global"
+        base_datos="$db_name_global"
+        usuario="$db_user_global"
+        read -p "Contraseña de la DB:  " password 
+        ;;
+    
+
+    *) 
+        echo "Opción no válida"
+        ;;
+    esac
+}
+
+#VAMOS A MOSTRAR QUE TENEMOS GUARDADO
+ver_datos()
+{
+echo "____________DATOS GLOBALES_______________"
+echo "Contenedor Global:     $contenedor_global"
+echo "Base de datos Global:  $db_name_global"
+echo "Ususario Global:       $db_user_global"
+echo "Contraseña Global:     $db_pass_global"
+echo "__________________________________________"
+echo "____________DATOS LOCALES--_______________"
+echo "Contenedor:     $contenedor"
+echo "Base de datos:  $base_datos"
+echo "Ususario:       $usuario"
+echo "Contraseña:     $password"
+read -p "Estos son los datos"
+}
+
+
+
+#cambiar pass root por siaca
+cambiar_pass()
+{
+sudo docker ps -a
+data_options_read
+echo "Se va ha trabajar sobre el contenedor $contenedor"
+read -p "Introduce la nueva contraseña" passroot
+sudo docker exec $contenedor sh -c "echo 'root:$passroot' | chpasswd"
+read -p "Listo"
+}
+
+#DUMPEANDO
+
+dumpear_db()
+{
+sudo docker ps -a
+echo "Si quieres usar los datos globales usa: usuario  contenedor password base_datos"
+data_options_read
+echo "Se va ha trabajar sobre el contenedor $contenedor en la base de datos $base_datos con el usuario $usuario y la contraseña $password"
+sudo docker exec -i $contenedor sh -c "mysqldump -p$password $db > /$datos_salida.sql"
+read -p "Listo"
+}
+
+#sacando los datos 
+sacar_db()
+{
+sudo docker ps -a
+data_options_read
+echo "Se va ha trabajar sobre el contenedor $contenedor y el archivo $archivo_copia"
+sudo docker cp $contenedor:/$archivo_copia $path_archivo   
+read -p "Listo"
+}
+
+
+#metiendo los datos 
+meter_db()
+{
+sudo docker ps -a
+data_options_read
+echo "Se va ha trabajar sobre el contenedor $contenedor"
+sudo docker cp $path_local/$archivo_entrada $contenedor:/$archivo_entrada 
+read -p "Listo"
+}
+
+#volcar dump  
+volcar_db()
+{
+sudo docker ps -a
+data_options_read
+echo "Se va ha trabajar sobre el contenedor $contenedor"
+sudo docker exec -i $contenedor sh -c "mysqldump -p$password $base_datos < $archivo_entrada" 
+read -p "Listo"
+}
+
+#dump y sacar
+dump_sacar()
+{
+sudo docker ps -a
+#read -p "De que contenedor: " contenedor_local
+sudo docker exec -i $contenedor sh -c "mysqldump -p$password $db > /$datos_salida.sql" && sudo docker cp $contenedor:/$archivo_copia $path_archivo   
+read -p "Listo"
+}
+
+#copiar y volcar
+copiar_volcar()
+{
+sudo docker ps -a
+#data_options_read
+sudo docker cp $path_local/$archivo_entrada $contenedor:/$archivo_entrada && sudo docker exec -i $contenedor sh -c "mysqldump -p$password $base_datos < $archivo_entrada" 
+read -p "Listo"
+}
+menu_principal
