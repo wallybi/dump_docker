@@ -1,21 +1,10 @@
 #!/bin/bash
-print_banner() {
-echo -e "\e[38;5;196m                                                                                      \e[0m"
-echo -e "\e[38;5;196m YMM'    MP' \`7MMF'\`7MN.   \`7MF'\`7MM\"\"\"\"YMM    .g8\"\"8q. \`7MMF'  \`7MMF'\`7MM\"\"\"Mq. \e[0m"
-echo -e "\e[38;5;208m  VMb.  ,P     MM    MMN.    M    MM    \`7  .dP'    \`YM. MM      MM    MM   \`MM.\e[0m"
-echo -e "\e[38;5;220m   \`MM.M'      MM    M YMb   M    MM   d    dM'      \`MM MM      MM    MM   ,M9 \e[0m"
-echo -e "\e[38;5;226m     MMb       MM    M  \`MN. M    MMmmMM    MM        MM MMmmmmmmMM    MMmmdM9  \e[0m"
-echo -e "\e[38;5;190m   ,M'\`Mb.     MM    M   \`MM.M    MM   Y  , MM.      ,MP MM      MM    MM       \e[0m"
-echo -e "\e[38;5;166m  ,P   \`MM.    MM    M     YMM    MM     ,M \`Mb.    ,dP' MM      MM    MM       \e[0m"
-echo -e "\e[38;5;130m.MM:.  .:MMa..JMML..JML.    YM  .JMMmmmmMMM   \`\"bmmd\"' .JMML.  .JMML..JMML.     \e[0m"
-echo -e "\e[38;5;118m                                                                                      \e[0m"
 
-}
 #MENU PRINCIPAL, COMO NO?
 menu_principal() {
     while true; do
         clear
-        print_banner
+       # print_banner
         echo "1. Dump DB"
         echo "2. Copiar DB"
         echo "3. Meter DB"
@@ -47,7 +36,7 @@ global_local()
 {
      while true; do
         clear
-        print_banner
+#        print_banner
         echo "1. Datos Globales"
         echo "2. Introducir datos"
         echo "3. Contenedor local"
@@ -78,7 +67,7 @@ ruta_inout()
 {
 while true; do
     clear
-    print_banner
+ #   print_banner
     echo "1) Introducir ruta local"
     echo "2) Ver ruta local"
     echo "3) Introducir ruta contenedor"
